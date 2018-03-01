@@ -1,0 +1,11 @@
+MapReduce的join操作主要分两类：map-join 和 reduce-join
+
+Reduce Join:
+1. map阶段，两份数据data1和data2会被map分别读入，解析成以连接字段为key，以查询字段为value的k-v对，并标明数据来源是data1还是data2.
+2. reduce阶段，reduce task 会接收来自data1 和 data2 的相同的key数据，在reduce端进行乘积连接，最直接的影响是很消耗内存，导致OOM.
+
+
+Map Join:
+Map join 适用于有一份数据较小的连接情况。做法是直接把该小份数据直接全部加载到内存中，按连接关键字建立索引(Map).
+然后大份数据就作为Map task的输入，对map()方法的每次输入都去内存当中直接匹配连接。然后把连接结果按key输出。
+这种方法要使用hadoop 中的DistributedCache把小份数据分布到各个计算节点，每个Map task执行任务的节点都需要加载该数据到内存，并且按连接关键字建立索引。

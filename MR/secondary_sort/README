@@ -1,0 +1,15 @@
+二次排序实现思路：
+将map端输出的<key,value>中的key和value组合成一个新的key（称为newKey），value值不变。
+这里就变成<(key,value),value>，在针对newKey排序的时候，如果key相同，就再对value进行排序。
+
+步骤：
+1.首先需要自定义数据类型实现组合key.
+  实现方式：继承WritableComparable类，实现序列化，重写比较器。
+
+2.自定义分区patition,形成newKey后保持分区规则任然按照key进行.保证不打乱原来的分区.
+  实现方式：继承Partitioner类
+
+3.自定义分组比较器.
+  实现方式：继承RawComparator类
+
+4.编写MapReduce代码，并指定自定义分区和分组比较器。
